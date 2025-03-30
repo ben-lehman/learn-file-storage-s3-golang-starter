@@ -80,6 +80,7 @@ func processVideoForFastStart(filePath string) (string, error) {
   output, err := cmd.CombinedOutput()
   if err != nil {
     log.Printf("ffmpeg failed: %v\nOutput: %s", err, output)
+    return "", err
   }
 
   return outputFilePath, nil

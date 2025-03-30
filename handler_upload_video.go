@@ -98,6 +98,7 @@ func (cfg *apiConfig) handlerUploadVideo(w http.ResponseWriter, r *http.Request)
     respondWithError(w, http.StatusInternalServerError, "Unable to open processed video file", err)
     return
   }
+  defer processVideoFile.Close()
   
   b32 := make([]byte, 32)
   rand.Read(b32)
@@ -115,8 +116,14 @@ func (cfg *apiConfig) handlerUploadVideo(w http.ResponseWriter, r *http.Request)
     return
   }
 
-  videoURL := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", cfg.s3Bucket, cfg.s3Region, randKey)  
+  videoURL := fmt.Sprintf("%s,%s", cfg.s3Bucket, randKey)  
   video.VideoURL = &videoURL;
+
+  video, err = cfg.dbVideoToSignedVideo(video)
+  if err != nil {
+    respondWithError(w, http.StatusInternalServerError, "Unable to get signed URL", err)
+    return
+  }
 
   err = cfg.db.UpdateVideo(video)
   if err != nil {
