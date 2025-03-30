@@ -129,6 +129,8 @@ async function uploadThumbnail(videoID) {
   uploadBtnSelector = 'upload-thumbnail-btn';
   setUploadButtonState(true, uploadBtnSelector);
 
+  console.log("tn form data", formData);
+
   try {
     const res = await fetch(`/api/thumbnail_upload/${videoID}`, {
       method: 'POST',
@@ -261,7 +263,7 @@ function viewVideo(video) {
     thumbnailImg.style.display = 'none';
   } else {
     thumbnailImg.style.display = 'block';
-    thumbnailImg.src = video.thumbnail_url;
+    thumbnailImg.src = `${video.thumbnail_url}`;
   }
 
   const videoPlayer = document.getElementById('video-player');
